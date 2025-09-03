@@ -1,0 +1,5 @@
+psutil
+wmi
+pyfiglet
+colorama
+tk
