@@ -1,12 +1,16 @@
 # -*- mode: python ; coding: utf-8 -*-
+from PyInstaller.utils.hooks import collect_data_files
+
+datas = []
+datas += collect_data_files('pyfiglet')
 
 
 a = Analysis(
     ['OEMCollector.py'],
     pathex=[],
     binaries=[],
-    datas=[],
-    hiddenimports=[],
+    datas=datas,
+    hiddenimports=['pyfiglet.fonts'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

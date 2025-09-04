@@ -17,28 +17,27 @@ import msvcrt
 
 init(autoreset=True)
 
-# loading_spinner fonksiyonunu buraya yapıştırın
-def loading_spinner(event, message="İşleniyor"):
+
+def loading_spinner(event, message="Processing..."):
     spinner_chars = ['/', '-', '\\', '|']
     i = 0
-    while not event.is_set(): # Event ayarlanana kadar dön
+    while not event.is_set():
         sys.stdout.write(f'\r{message} {spinner_chars[i % len(spinner_chars)]}')
         sys.stdout.flush()
         i += 1
-        time.sleep(0.1) # Animasyon hızını ayarla
+        time.sleep(0.1)
     
-    # Spinner durduktan sonra satırı temizle
     sys.stdout.write('\r' + ' ' * (len(message) + 2 + len(spinner_chars)) + '\r')
     sys.stdout.flush()
-    result = "Sistem OEMKEY başarıyla envantere eklendi"
-    print(Fore.GREEN + result) # İşlem bittikten sonra tamamlama mesajı
+    result = "The system OEMKEY has been successfully added to the inventory."
+    print(Fore.GREEN + result)
 
 def get_user_info():
     banner = pyfiglet.figlet_format("OEMKEY COLLECTOR")
     print(Fore.GREEN + banner)
 
-    ad = input(Fore.GREEN + "Adınız: ").strip()
-    soyad = input(Fore.GREEN + "Soyadınız: ").strip()
+    ad = input(Fore.GREEN + "Your Name : ").strip()
+    soyad = input(Fore.GREEN + "Your Subname : ").strip()
     return f"{ad} {soyad}"
 
 def get_OEMKEY():
@@ -51,7 +50,7 @@ def get_OEMKEY():
 
 def get_system_info():
     c = wmi.WMI()
-    info = "=== Sistem Bilgileri ===\n\n"
+    info = "=== System Information ===\n\n"
 
     for os in c.Win32_OperatingSystem():
         info += f"OS Name: {os.Caption.strip()}\n"
@@ -61,13 +60,13 @@ def get_system_info():
     for system in c.Win32_ComputerSystem():
         info += f"System Manufacturer: {system.Manufacturer}\n"
         info += f"System Model: {system.Model}\n"
-        info += f"RAM (Toplam): {round(psutil.virtual_memory().total / (1024 ** 3), 2)} GB\n"
+        info += f"RAM (Total): {round(psutil.virtual_memory().total / (1024 ** 3), 2)} GB\n"
 
     for processor in c.Win32_Processor():
-        info += f"İşlemci: {processor.Name.strip()}\n"
+        info += f"CPU : {processor.Name.strip()}\n"
 
     for gpu in c.Win32_VideoController():
-        info += f"Ekran Kartı: {gpu.Name}\n"
+        info += f"GPU : {gpu.Name}\n"
 
     info += "\n======== OEM KEY ========\n"
 
@@ -89,7 +88,7 @@ def send_email(subject, body, to_email, from_email, from_password, done_event):
         server.quit()
         print("")
     except Exception as e:
-        print("E-posta gönderilemedi:", e)
+        print("The email could not be sent : ", e)
     finally:
         done_event.set()
 
@@ -101,21 +100,21 @@ if __name__ == "__main__":
     
     done_event = threading.Event()
 
-    spinner_thread = threading.Thread(target=loading_spinner, args=(done_event, Fore.GREEN + "Sistem Bilgisi Gönderiliyor."))
+    spinner_thread = threading.Thread(target=loading_spinner, args=(done_event, Fore.GREEN + "System Information is being sent..."))
     spinner_thread.start()
 
     system_info = get_system_info()
 
-    mail_body = f"Kullanıcı: {full_name}\n\n{system_info}\n\n{device_OEM}"
+    mail_body = f"User: {full_name}\n\n{system_info}\n\n{device_OEM}"
 
-    TO_EMAIL = "your mail"
-    FROM_EMAIL = "your mail again"
-    FROM_PASSWORD = "your mail password"
+    TO_EMAIL = "<your mail>"
+    FROM_EMAIL = "<your mail again>"
+    FROM_PASSWORD = "<your mail password>"
 
     
 
     send_email(
-        subject=f"{full_name} - Sistem Bilgisi Raporu",
+        subject=f"{full_name} - System Information Report",
         body=mail_body,
         to_email=TO_EMAIL,
         from_email=FROM_EMAIL,
@@ -124,7 +123,7 @@ if __name__ == "__main__":
     )
     root = tk.Tk()
     root.withdraw()
-    print("Programı kapatmak için herhangi bir tuşa basın...")
+    print("Press any key to close the program...")
     msvcrt.getch()
     sys.exit()
 
