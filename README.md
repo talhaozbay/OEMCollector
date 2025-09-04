@@ -31,6 +31,8 @@ If you don't want to use the executable, you can run the script with Python by i
 
 ```bash
 pip install -r requirements.txt
+pip install pyinstaller
+pyinstaller --onefile --icon=OEMcollector.ico --hidden-import=pyfiglet.fonts --collect-data=pyfiglet OEMCollector.py
 ```
 
 The `requirements.txt` file includes the following packages:
